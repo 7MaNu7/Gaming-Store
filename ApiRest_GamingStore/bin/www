@@ -1,0 +1,38 @@
+var app = require('../app');
+var models = require('../models');
+app.set('port', process.env.PORT || 3000);
+
+var desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum";
+
+
+models.sequelize.sync({force:true}).then(function(){
+	return models.Consola.create({nombre:'Playstation 4', descripcion:desc, imagenURL: 'https://s7test3.scene7.com/is/image/psmedia/ps4-system-imageblock-us-13jun14?$TwoColumn_Image$'})
+}).then(function(consola){
+	return models.Juego.bulkCreate([
+		{nombre:'Metal Gear Solid V', descripcion:desc, genero:'Aventura', ConsolaId:consola.id, portada:'http://media.vandal.net/m/20812/metal-gear-solid-v-the-phantom-pain-201583113954_1.jpg', nota: 9.8, precioAntes: 79.99, precioDespues: 59.99},
+		{nombre:'Fifa 16', ConsolaId:consola.id, descripcion:desc, portada: 'http://www.publimetro.com.mx/_internal/gxml!0/r0dc21o2f3vste5s7ezej9x3a10rp3w$2e2xrrooui9k2r5yky9y3m5jwcu7ebn/marco.jpeg', genero:"Deportes", nota: 9.2, precioAntes: 69.99, precioDespues: 49.99},
+	])
+}).then(function(){
+	return models.Consola.create({nombre:'Wii U', descripcion:'Es blanca', imagenURL: 'http://content.hwigroup.net/images/news/nintendo_wii_u_black.jpg'})
+}).then(function(consola){
+	return models.Juego.create({
+		nombre:'New Super Mario Bros U', genero: 'Plataformas', descripcion:desc, ConsolaId:consola.id, portada: 'https://vgboxart.com/boxes/WiiU/48263-new-super-mario-bros-u.png', nota: 9.1, precioDespues: 59.99
+	}).then(function(juego){
+		return models.Usuario.create({email:'mjvr4@alu.ua.es', nombre:'Manuel', apellidos:'Verdu', direccion:'Avenida Pais Valenciano', avatar: 'https://pbs.twimg.com/profile_images/628486041465421824/FNUiC64z.jpg'}).then(function(user){
+			user.addJuego(juego);
+		});
+	})
+}).then(function(){
+	return models.Consola.bulkCreate([
+		{nombre:'Xbox One', descripcion: desc, imagenURL: 'http://dri2.img.digitalrivercontent.net/Storefront/Company/msemea/images/English/en-EMEA_Xbox_One_Console_250GB_RKH-00107/en-EMEA_L_Xbox_One_Console_250GB_RKH-00107_RM1_mnco.png'},
+		{nombre:'Nintendo DS Lite', descripcion:desc, imagenURL: 'http://www.productappeal.com/photos/uncategorized/nintendo_ds_lite.jpg'},
+		{nombre:'PSVITA', descripcion:desc, imagenURL: 'http://cdn.latam.playstation.com/latamucm/groups/public/documents/webasset/ps_vita_system_mx.png'},
+		{nombre:'Playstation 3', descripcion:desc, imagenURL: 'http://static.betazeta.com/www.fayerwayer.com/up/2009/03/ps3.jpg'},
+		{nombre:'Xbox 360', descripcion:desc, imagenURL: 'http://cdn3.sbnation.com/products/large/1701/xbox360.jpg?1316097758'},
+		{nombre:'Nintendo 3DS XL', descripcion:desc, imagenURL: 'https://www.nintendo.com/images/page/3ds/what-is-3ds/hero-new-3ds.png'}
+	])
+}).then(function(){
+	app.listen(app.get('port'), function(){
+		console.log('Express en el puerto '+app.get('port'));
+	})
+});

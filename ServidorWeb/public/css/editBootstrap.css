@@ -1,0 +1,124 @@
+.list-group-item {
+	width: 46%;
+	float: left;
+	margin-left: 30px;
+    margin-top: 30px;
+}
+
+.consolasItems {
+    width: 42%;
+}
+
+.juegosPerfil {
+	width: 35%;
+}
+
+.btn-md {
+	width: 70px;
+}
+
+.crearGame{
+	width: 200px;
+    float: right;
+    margin-right: 31%;
+}
+
+.crearConsole{
+	width: 200px;
+    float: right;
+    margin-right: 35%;
+    margin-top: 30px;
+}
+
+
+.navbar-nav {
+	padding-top: 3px;
+	font-size: 20px;
+}
+
+.navbar-brand {
+	font-size: 29px;
+}
+
+.navbar {
+	min-height: 59px;
+}
+
+.navbar-header {
+	padding-top: 3px;
+}
+
+.cambiar {
+	background-color: transparent;
+    border-color: transparent;
+    float: right;
+}
+
+.navbar-inverse .navbar-nav>li>button {
+    color: #fff;
+}
+
+.navbar-nav>li>button {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 20px;
+}
+
+.nav>li>button {
+    position: relative;
+    display: block;
+    padding: 13px 15px;
+}
+
+button:-webkit-any-link {
+    cursor: auto;
+}
+
+.anchoEditado {
+	width: 60%;
+	float: left;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+button.close {
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}
+.close {
+    float: right;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+    filter: alpha(opacity=20);
+}
+
+.close:focus, .close:hover {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    filter: alpha(opacity=50);
+    opacity: .5;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}

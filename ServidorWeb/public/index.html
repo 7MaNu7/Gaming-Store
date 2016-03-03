@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en" ng-app="gamingStore">
+<head>
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+  <link rel="stylesheet" type="text/css" href="/aplicacion/css/general.css">
+  <link rel="stylesheet" type="text/css" href="/aplicacion/css/form.css">
+  <link rel="stylesheet" type="text/css" href="/aplicacion/css/editBootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/aplicacion/css/editJqueryMobile.css">
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="/aplicacion/js/app.js"></script>
+  <script src="/aplicacion/js/controllers.js"></script>
+  <script src="/aplicacion/js/consolaControllers.js"></script>
+  <script src="/aplicacion/js/usuarioControllers.js"></script>
+
+</head>
+<body>
+
+  <div ng-controller="ListaJuegosCtrl" data-role="page" id="juegos">
+    <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+      <div data-role="navbar">
+        <ul>
+          <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+          <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+          <li>
+            <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+            <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil' ng-click="detallesUsuario()">Perfil</a>
+            <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+          </li>
+          <li>
+            <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+            <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+          </li>
+        </ul>
+      </div>
+    </div>  
+    <div data-role="main" class="ui-content">
+    <h1> Lista de juegos </h1>
+      <div id="alertasListaJuegos">
+
+      </div>
+      <ul id="listajuegos" data-role="listview" data-inset="true">
+        <li data-ng-repeat="juego in juegos" ng-repeat-con-jquery-mobile>
+          <a href="#detallesJuego" ng-click="detalles(juego)">
+            <img src="{{juego.portada}}" onerror="this.src='http://vignette1.wikia.nocookie.net/superfriends/images/a/a5/No_Photo_Available.jpg/revision/latest?cb=20090329133959'" style="margin-left:5px; margin-top:20px;">
+            <h2>{{juego.nombre}}</h2> <h5>{{juego.precioDespues}} €</h5>
+          </a>
+         </li>
+       </ul>
+
+       <label for="chooseconsola" class="select"><h4>Filtro por consola:</h4></label>
+       <div class="ui-block-a" style="width: 65%;">
+       <select ng-model="consolaFiltrada" id="chooseconsola" name="chooseconsola" style="width: 100%;">
+        <option value="">Todas</option>
+        <option value="{{consola.id}}" ng-repeat="consola in consolas"  ng-repeat-con-jquery-mobile>{{consola.nombre}}</option>
+       </select>
+       </div>
+       <div class="ui-block-b" style="width: 35%;">
+       <button style="width: 100%;" class="ui-btn ui-btn-b" ng-click="filtrar()"><b>Filtrar</b></button>
+       </div>
+
+       <a href="#crearJuego" ng-show="mostrarCrear" class="ui-btn ui-btn-b">
+        Añadir un juego
+       </a>
+
+    </div>  
+    <div data-role="footer">
+      <h1>&copy; Manuel and co 2016</h1>
+    </div>  
+  </div>
+
+  <div data-role="page" id="juegosFiltrados">
+    <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+      <div data-role="navbar">
+        <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil' ng-click="detallesUsuario()">Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+      </div>
+    </div>  
+    <div ng-controller="ListaJuegosFiltradosCtrl" data-role="main" class="ui-content">
+    <h1> Lista de juegos de {{consola.nombre}}</h1>
+      <ul ng-controller="ListaJuegosFiltradosCtrl" id="listajuegosfiltrados" data-role="listview" data-inset="true">
+        <li data-ng-repeat="juego in juegos" ng-repeat-con-jquery-mobile>
+          <a href="#detallesJuego" ng-click="detalles(juego)">
+            <img src="{{juego.portada}}" onerror="this.src='http://vignette1.wikia.nocookie.net/superfriends/images/a/a5/No_Photo_Available.jpg/revision/latest?cb=20090329133959'" style="margin-left:5px; margin-top:20px;">
+            <h2>{{juego.nombre}}</h2> <h5>{{juego.precioDespues}} €</h5>
+          </a>
+         </li>
+       </ul>
+       <a ng-controller="ListaJuegosFiltradosCtrl" ng-click="volver()" class="ui-btn ui-btn-b">
+        Volver
+       </a>
+    </div>  
+    <div data-role="footer">
+      <h1>&copy; Manuel and co 2016</h1>
+    </div>  
+  </div>
+  
+    <div data-role="page" id="detallesJuego" ng-controller="detallesJuegoCtrl">
+      <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+        <div data-role="navbar">
+          <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>  
+      <div data-role="main" class="ui-content">
+        <div data-role="popup" id="popupComprarJuego" class="ui-content" style="max-width:280px">
+         <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+         <h4>Enhorabuena, el juego llegara a tu direccion!</h4>
+         <p>Puedes verificar que se ha producido la compra visitando tu historial de compras</p>
+        </div>
+        <div id="alertasJuego">
+
+        </div>
+          <div class="imagenleft imagenVer">
+           <img src="{{juego.portada}}" onerror="this.src='http://vignette1.wikia.nocookie.net/superfriends/images/a/a5/No_Photo_Available.jpg/revision/latest?cb=20090329133959'"  width="136" height="204" style="margin-left:5px; margin-top:20px;">
+            </div>
+            <div class="elemsright">
+              <div class="encabezado">
+                <div class="parteArriba">
+                  <div>
+                    <div style="margin-top:20px;">
+                      <h3>{{juego.nombre}}</h3>
+                      <h4>Consola: {{consola.nombre}}</h4>
+                      <h4 style="margin-top:20px;">Genero: {{juego.genero}}</h4>
+                      <h4 style="margin-top:20px;">Valoracion: {{juego.nota}}</h4>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div>
+                  <h4 class="despues" style="margin-right:10px; margin-top:-10px;">Precio: </h4><h6 class="antes">{{juego.precioAntes}}</h6><h3 class="despues">{{juego.precioDespues}}</h3><h5 class="despues">€</h5>
+                </div>
+              </div>
+              <div>
+                <h4>Descripcion:</h4>
+                <p> {{juego.descripcion}} </p>
+              </div>
+            </div>
+            <a ng-click="modificarJuego(juego)" ng-show="mostrarEditar" class="ui-btn ui-btn-b">
+              Editar juego
+            </a>
+            <a ng-click="delete(juego)" ng-show="mostrarBorrar" class="ui-btn ui-btn-a">
+              Borrar juego
+            </a>
+            <a ng-click="comprar(juego)" ng-show="mostrarComprar" class="ui-btn ui-btn-b">
+              Comprar juego
+            </a>
+      </div>  
+      <div data-role="footer">
+        <h1>&copy; Manuel and co 2016</h1>
+      </div>  
+    </div>
+
+  <div ng-controller="ListaConsolasCtrl" data-role="page" id="consolas">
+    <div ng-controller="LoginCtrl" data-role="header">
+      <h1> GamingStore </h1>
+      <div style="text-align: right;">
+        <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+      </div>
+      <div data-role="navbar">
+          <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+      </div>
+    </div>  
+    <div data-role="main" class="ui-content">
+      <h1> Lista de consolas </h1>
+      <div id="alertasListaConsolas">
+
+      </div>
+      <ul id="listaconsolas" data-role="listview" data-inset="true">
+        <li data-ng-repeat="consola in consolas" ng-repeat-con-jquery-mobile>
+          <a href="#detallesConsola" ng-click="detalles(consola)">
+            <img src="{{consola.imagenURL}}" onerror="this.src='http://vignette1.wikia.nocookie.net/superfriends/images/a/a5/No_Photo_Available.jpg/revision/latest?cb=20090329133959'" style="margin-left:5px; margin-top:20px;">
+            <h2>{{consola.nombre}}</h2>
+          </a>
+          
+         </li>
+       </ul>
+       <a href="#crearConsola" ng-show="mostrarCrear" class="ui-btn ui-btn-b">
+        Añadir una consola
+       </a>
+    </div>  
+    <div data-role="footer">
+      <h1>&copy; Manuel and co 2016</h1>
+    </div>  
+  </div>
+
+  <div data-role="page" id="detallesConsola" ng-controller="detallesConsolaCtrl">
+      <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+        <div data-role="navbar">
+          <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>  
+      <div data-role="main" class="ui-content">
+        <div id="alertasConsola">
+
+        </div>
+        <div class="imagenleft imagenVer">
+                <img src="{{consola.imagenURL}}" onerror="this.src='http://vignette1.wikia.nocookie.net/superfriends/images/a/a5/No_Photo_Available.jpg/revision/latest?cb=20090329133959'"  width="136" height="204" style="margin-left:5px; margin-top:20px;">
+            </div>
+            <div class="elemsright">
+              <h3> {{consola.nombre}} </h3>
+              <h4>Descripcion:</h4>
+              <p> {{consola.descripcion}} </p>
+            </div>
+            <a ng-click="modificarConsola(consola)" ng-show="mostrarEditar" class="ui-btn ui-btn-b">
+              Editar consola
+            </a>
+            <a ng-click="delete(consola)" ng-show="mostrarBorrar" class="ui-btn ui-btn-a">
+              Borrar consola
+            </a>
+      </div>  
+      <div data-role="footer">
+        <h1>&copy; Manuel and co 2016</h1>
+      </div>  
+    </div>
+
+  <div data-role="page" id="usuarios">
+    <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+      <div data-role="navbar">
+        <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+      </div>
+    </div>  
+    <div data-role="main" class="ui-content">
+    <h1> Lista de usuarios </h1>
+      <ul ng-controller="ListaUsuariosCtrl" id="listausuarios" data-role="listview" data-inset="true">
+        <li data-ng-repeat="usuario in usuarios" ng-repeat-con-jquery-mobile>
+            <img src="{{usuario.avatar}}"  onerror="this.src='http://www.montana.edu/rha/images/no_image.jpg'" width="100" height="100">
+            <h4>Email: {{usuario.email}}</h4>
+            <p> Nombre: {{usuario.nombre}} {{usuario.apellidos}} </p>
+        </li>
+       </ul>
+    </div>  
+    <div data-role="footer">
+      <h1>&copy; Manuel and co 2016</h1>
+    </div>  
+  </div>
+
+<div data-role="page" id="login" ng-controller="LoginCtrl">
+  <div data-role="header">
+    <h1> GamingStore </h1>
+    <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+      <div data-role="navbar">
+        <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+          </ul>
+      </div>
+  </div>
+  <div data-role="main" class="ui-content">
+    <div id="MostrarSuccessReg" class="container-fluid">
+
+    </div>
+    <div data-role="popup" id="popupLogin" class="ui-content" style="max-width:280px">
+       <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+       <p>{{mensajeError}}</p>
+    </div>
+    <form>
+      <ul data-role="listview" data-inset="true">
+          <li class="ui-field-contain">
+              <label for="log">Login:</label>
+              <input ng-model="login" type="text" name="log" id="log" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="pass">Password:</label>
+              <input ng-model="password" type="password" name="pass" id="pass" data-clear-btn="true">
+          </li>
+          <li class="ui-body ui-body-b">
+              <fieldset class="ui-grid-a">
+                <div class="ui-block-a"><a id="linkLogin" class="ui-btn ui-corner-all ui-btn-b" ng-click='comprobarLogin()'>Entrar</a></div>
+                <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-a" href="#juegos">Cancel</a></div>
+              </fieldset>
+          </li>
+      </ul>
+    </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+
+<div data-role="page" id="registro">
+  <div data-role="header">
+    <h1> GamingStore </h1>
+  </div>
+  <div data-role="main" class="ui-content">
+       <div data-role="popup" id="popupRegistro" class="ui-content" style="max-width:280px">
+         <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+         <p id="errorRegistro"></p>
+       </div>
+      <form id="crearusuario">
+        <ul data-role="listview" data-inset="true">
+          <li class="ui-field-contain">
+              <label for="nombre">Nombre:</label>
+              <input ng-model="usuario.nombre" type="text" name="nombre" id="nombre" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="apellidos">Apellidos:</label>
+              <input ng-model="usuario.apellidos" type="text" name="apellidos" id="apellidos" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="email">Email:</label>
+              <input ng-model="usuario.email" type="text" name="email" id="email" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="nombre">Direccion:</label>
+              <input ng-model="usuario.direccion" type="text" name="direccion" id="direccion" data-clear-btn="true">
+          </li>
+          <li class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
+              <div class="ui-block-a"><a id="creaUser" class="ui-btn ui-corner-all ui-btn-b">Enviar</a></div>
+              <div class="ui-block-a"><a id="cancelaRegistro" class="ui-btn ui-corner-all ui-btn-a">Cancelar</a></div>
+            </fieldset>
+          </li>
+      </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+
+<div ng-controller="CrearJuegoCtrl" data-role="page" id="crearJuego">
+  <div data-role="header">
+    <h1> GamingStore </h1>
+  </div>
+  <div data-role="main" class="ui-content">
+      <div data-role="popup" id="popupCrearJuego" class="ui-content" style="max-width:280px">
+         <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+         <p>{{mensajeError}}</p>
+      </div>
+      <form id="crearjuego">
+        <ul data-role="listview" data-inset="true">
+          <li class="ui-field-contain">
+              <label for="nombre">Nombre:</label>
+              <input placeholder="Introduzca el nombre" ng-model="juego.nombre" type="text" name="nombre" id="nombre" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="desc">Descripcion:</label>
+              <textarea rows="4" placeholder="Introduzca una descripcion" ng-model="juego.descripcion" type="text" name="desc" id="desc" data-clear-btn="true"></textarea>
+          </li>
+          <li class="ui-field-contain">
+              <label for="portada">Portada:</label>
+              <input placeholder="Introduzca la URL de la foto" ng-model="juego.portada" id="portada" name="portada" type="text" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="nota">Nota:</label>
+              <input placeholder="Introduzca una nota de 0 a 10" ng-model="juego.nota" type="text" name="nota" id="nota" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="precioAntes">Precio Antiguo:</label>
+              <input placeholder="Introduce un precio antiguo si actualmente esta rebajado" ng-model="juego.precioAntes" id="precioAntes" name="precioAntes" type="text" data-clear btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="precioDespues">Precio Actual:</label>
+              <input placeholder="Introduce el precio del producto" ng-model="juego.precioDespues" id="precioDespues" name="precioDespues" type="text" data-clear btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="elegirconsola" class="select">Consola:</label>
+              <select ng-model="consolaSeleccionada" id="elegirconsola" name="elegirconsola">
+                  <option value="">Elija Consola</option>
+                  <option value="{{consola.id}}" ng-repeat="consola in consolas">{{consola.nombre}}</option>
+              </select>
+          </li>
+          <li class="ui-field-contain">
+              <label for="elegirgenero" class="select">Genero:</label>
+              <select ng-model="generoSeleccionado" id="elegirgenero" name="elegirgenero">
+                  <option value="">Elija Genero</option>
+                  <option value="Accion">Accion</option>
+                  <option value="Aventura">Aventura</option>
+                  <option value="Deportes">Deportes</option>
+                  <option value="Plataformas">Plataformas</option>
+                  <option value="Rol">Rol</option>
+              </select>
+          </li>
+          <li class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-b" ng-click='juegoCreado()'>Enviar</a></div>
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-a" ng-click='cancelarCreacion()'>Cancelar</a></div>
+            </fieldset>
+          </li>
+      </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+
+<div data-role="page" id="editarJuego">
+  <div data-role="header">
+    <h1> GamingStore </h1>
+  </div>
+  <div data-role="main" class="ui-content">
+       <div ng-controller="editarJuegoCtrl" data-role="popup" id="popupEditarJuego" class="ui-content" style="max-width:280px">
+         <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+         <p>{{mensajeError}}</p>
+       </div>
+      <form id="editarjuego">
+        <ul data-role="listview" data-inset="true" ng-controller="editarJuegoCtrl">
+          <li class="ui-field-contain">
+              <label for="nombre">Nombre:</label>
+              <input placeholder="Introduzca el nombre" ng-model="juego.nombre" type="text" name="nombre" id="nombre" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="desc">Descripcion:</label>
+              <textarea rows="4" placeholder="Introduzca una descripcion" ng-model="juego.descripcion" type="text" name="desc" id="desc" data-clear-btn="true"></textarea>
+          </li>
+          <li class="ui-field-contain">
+              <label for="portada">Portada:</label>
+              <input placeholder="Introduzca la URL de la foto" ng-model="juego.portada" id="portada" name="portada" type="text" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="nota">Nota:</label>
+              <input placeholder="Introduzca una nota de 0 a 10" ng-model="juego.nota" type="text" name="nota" id="nota" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="precioAntes">Precio Antiguo:</label>
+              <input placeholder="Introduce un precio antiguo si actualmente esta rebajado" ng-model="juego.precioAntes" id="precioAntes" name="precioAntes" type="text" data-clear btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="precioDespues">Precio Actual:</label>
+              <input placeholder="Introduce el precio del producto" ng-model="juego.precioDespues" id="precioDespues" name="precioDespues" type="text" data-clear btn="true">
+          </li>
+          <li class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-b" ng-click='juegoEditado(juego)'>Enviar</a></div>
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-a" ng-click="cancelar(juego)">Cancelar</a></div>
+            </fieldset>
+          </li>
+        </ul>
+      </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+<div data-role="page" id="editarConsola">
+  <div data-role="header">
+    <h1> GamingStore </h1>
+  </div>
+  <div data-role="main" class="ui-content">
+     <div ng-controller="editarConsolaCtrl" data-role="popup" id="popupEditarConsola" class="ui-content" style="max-width:280px">
+       <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+       <p>{{mensajeError}}</p>
+     </div>
+      <form id="editarconsola">
+        <ul data-role="listview" data-inset="true" ng-controller="editarConsolaCtrl">
+          <li class="ui-field-contain">
+              <label for="nombre">Nombre:</label>
+              <input placeholder="Introduzca el nombre" ng-model="consola.nombre" type="text" name="nombre" id="nombre" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="desc">Descripcion:</label>
+              <textarea rows="4" placeholder="Introduzca una descripcion" ng-model="consola.descripcion" type="text" name="desc" id="desc" data-clear-btn="true"></textarea>
+          </li>
+          <li class="ui-field-contain">
+              <label for="portada">URL de la imagen:</label>
+              <input placeholder="Introduzca la URL de la foto" ng-model="consola.imagenURL" id="imagen" name="imagen" type="text" data-clear-btn="true">
+          </li>
+          <li class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-b" ng-click='consolaEditada(consola)'>Enviar</a></div>
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-a" ng-click="cancelar(consola)">Cancelar</a></div>
+            </fieldset>
+          </li>
+        </ul>
+      </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+
+<div ng-controller="CrearConsolaCtrl" data-role="page" id="crearConsola">
+  <div data-role="header">
+    <h1> GamingStore </h1>
+  </div>
+  <div data-role="main" class="ui-content">
+       <div data-role="popup" id="popupCrearConsola" class="ui-content" style="max-width:280px">
+         <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+         <p>{{mensajeError}}</p>
+       </div>
+      <form id="crearconsola">
+        <ul data-role="listview" data-inset="true">
+          <li class="ui-field-contain">
+              <label for="nombre">Nombre:</label>
+              <input placeholder="Introduzca el nombre" ng-model="consola.nombre" type="text" name="nombre" id="nombre" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="desc">Descripcion:</label>
+              <textarea rows="4" placeholder="Introduzca una descripcion" ng-model="consola.descripcion" type="text" name="desc" id="desc" data-clear-btn="true"></textarea>
+          </li>
+          <li class="ui-field-contain">
+              <label for="portada">URL de la imagen:</label>
+              <input placeholder="Introduzca la URL de la foto" ng-model="consola.imagenURL" id="imagen" name="imagen" type="text" data-clear-btn="true">
+          </li>
+          <li class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-b" ng-click='consolaCreada()'>Enviar</a></div>
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-a" ng-click='cancelarCreacion()'>Cancelar</a></div>
+            </fieldset>
+          </li>
+        </ul>
+      </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+  <div data-role="page" id="perfil" ng-controller="detallesUsuarioCtrl">
+      <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+        <div data-role="navbar">
+          <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>  
+      <div data-role="main" class="ui-content">
+        <div id="alertasUsuario">
+
+        </div>
+        <div class="imagenleft imagenVer">
+                <img src="{{usuario.avatar}}" onerror="this.src='http://www.montana.edu/rha/images/no_image.jpg'"  width="150" height="150">
+            </div>
+            <div class="elemsright">
+              <h3>Email: {{usuario.email}} </h3>
+              <p>Nombre completo: {{usuario.apellidos}}, {{usuario.nombre}}</p>
+              <p>Direccion de envio: {{usuario.direccion}} </p>
+            </div>
+            <a ng-click="verHistorial()" class="ui-btn ui-btn-b" style="margin-top: 50px;">
+              Ver historial de compras
+            </a>
+            <a ng-click="modificarUsuario()" class="ui-btn ui-btn-a">
+              Editar datos personales
+            </a>
+            <a ng-click="delete(usuario.id)" class="ui-btn ui-btn-b">
+              Borrar perfil
+            </a>
+      </div>  
+      <div data-role="footer">
+        <h1>&copy; Manuel and co 2016</h1>
+      </div>  
+    </div>
+
+
+
+<div data-role="page" id="editarUsuario">
+  <div ng-controller="LoginCtrl" data-role="header">
+    <h1> GamingStore </h1>
+  </div>
+  <div style="text-align: right;">
+    <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+  </div>
+  <div data-role="navbar">
+    <ul>
+      <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+      <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+      <li>
+        <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+        <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil'>Perfil</a>
+        <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+      </li>
+      <li>
+        <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+        <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+      </li>
+    </ul>
+  </div>
+  <div data-role="main" class="ui-content">
+   <div ng-controller="editarUsuarioCtrl" data-role="popup" id="popupEditarUsuario" class="ui-content" style="max-width:280px">
+     <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
+     <p>{{mensajeError}}</p>
+   </div>
+      <form id="editarusuario">
+        <ul data-role="listview" data-inset="true" ng-controller="editarUsuarioCtrl">
+          <li class="ui-field-contain">
+              <label for="nombre">Nombre:</label>
+              <input ng-model="usuario.nombre" type="text" name="nombre" id="nombre" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="apellidos">Apellidos:</label>
+              <input ng-model="usuario.apellidos" type="text" name="apellidos" id="apellidos" data-clear-btn="true">
+          </li>
+          <li class="ui-field-contain">
+              <label for="nombre">Direccion de envio:</label>
+              <input ng-model="usuario.direccion" type="text" name="direccion" id="direccion" data-clear-btn="true">
+          </li>
+          <li class="ui-body ui-body-b">
+            <fieldset class="ui-grid-a">
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-b" ng-click='usuarioEditado()'>Guardar</a></div>
+              <div class="ui-block-a"><a class="ui-btn ui-corner-all ui-btn-a" ng-click="cancelar()">Cancelar</a></div>
+            </fieldset>
+          </li>
+      </form>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+
+<div data-role="page" id="historial">
+    <div ng-controller="LoginCtrl" data-role="header">
+        <h1> GamingStore </h1>
+        <div style="text-align: right;">
+          <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+        </div>
+      <div data-role="navbar">
+        <ul>
+            <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+            <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+            <li>
+              <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+              <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil' ng-click="detallesUsuario()">Perfil</a>
+              <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+            </li>
+            <li>
+              <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+              <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+            </li>
+          </ul>
+      </div>
+    </div>  
+    <div ng-controller="detallesUsuarioCtrl" data-role="main" class="ui-content">
+    <h1> Lista de juegos de {{usuario.nombre}} {{usuario.apellidos}}</h1>
+      <ul id="listajuegosusuario" data-role="listview" data-inset="true">
+        <li data-ng-repeat="juego in juegosUsuario" ng-repeat-con-jquery-mobile>
+          <a href="#detallesJuego" ng-click="detalles(juego)">
+            <img src="{{juego.portada}}" onerror="this.src='http://vignette1.wikia.nocookie.net/superfriends/images/a/a5/No_Photo_Available.jpg/revision/latest?cb=20090329133959'" style="margin-left:5px; margin-top:33px;">
+            <h2>{{juego.nombre}}</h2> 
+            <h4>Genero: {{juego.genero}}</h4>
+            <h4>Adquirido por {{juego.precioDespues}} €</h4>
+          </a>
+         </li>
+       </ul>
+       <a class="ui-btn ui-btn-a" ng-click="volverPerfil()">Volver a los datos personales</a>
+    </div>  
+    <div data-role="footer">
+      <h1>&copy; Manuel and co 2016</h1>
+    </div>  
+  </div>
+
+<div data-role="page" id="error">
+  <div ng-controller="LoginCtrl" data-role="header">
+      <h1> GamingStore </h1>
+      <div style="text-align: right;">
+        <a ng-hide="mostrarLogout" style="font-size: 12px; cursor: pointer;" href="#registro">¿Aun no te has registrado?</a>
+      </div>
+    <div data-role="navbar">
+      <ul>
+          <li><a data-transition="slide" href="#juegos">Juegos</a></li>
+          <li><a data-transition="slide" href="#consolas">Consolas</a></li>
+          <li>
+            <a data-transition="slide" ng-show='mostrarUsuarios' href='#usuarios'>Usuarios</a>
+            <a data-transition="slide" ng-show='mostrarUsuario' href='#perfil' ng-click="detallesUsuario()">Perfil</a>
+            <a data-transition="slide" ng-show='mostrarModal' href='#login'>Perfil</a>
+          </li>
+          <li>
+            <a ng-hide="mostrarLogout" href='#login'>Iniciar Sesion</a>
+            <a ng-show="mostrarLogout" ng-click="logout()">Cerrar Sesion</a>
+          </li>
+        </ul>
+    </div>
+  </div>  
+  <div data-role="main" class="ui-content">
+    <h1>Pagina de error!</h1>
+    <p> Error 403: No tienes permiso para acceder a esta pagina</p>
+  </div>
+  <div data-role="footer">
+    <h1>&copy; Manuel and co 2016</h1>
+  </div>  
+</div>
+  
+
+</body>
+</html>
+
+<script src="/aplicacion/js/controllerSinAngular.js"></script>

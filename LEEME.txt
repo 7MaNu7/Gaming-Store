@@ -1,0 +1,19 @@
+Este proyecto esta pensado para lanzarlo en Google Chrome
+
+Se ha mantenido el caso de uso sin  Angular para el registro, pero por comodidad el listado de usuarios ahora se hace con angular
+dado que no se especifica ninguna restriccion en esta practica sobre casos de uso sin Angular.
+
+Se ha dejado de lado la paginacion como comentaste en clase de practicas al preguntar.
+
+Todos los casos de uso han sido implementados con el objetivo de sacar los 3 puntos extra (No ha habido tiempo para mas extras)
+
+Entrego por un lado una carpeta con el api y otra carpeta con la parte cliente, incluyendo los zips de las demas entregas.
+
+Recuerdo una vez mas que el usuario administrador es: login->admin // passwd->admin                   //     usuario corriente:          login->usuario // passwd->123456.
+
+Recordar de nuevo tambien que se muestra el perfil del primer usuario a pelo, por tanto en caso de eliminarlo considerar la opcion de repetir node bin/www para evitar errores.
+
+Al comienzo npm install.
+
+node bin/www  en la parte el api para iniciar.
+node app.js en la parte cliente.

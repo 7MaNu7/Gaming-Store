@@ -1,0 +1,122 @@
+.titulo {
+	background-color: green;
+	height: 100px;
+}
+
+.whiteLetters {
+    letter-spacing: 3px;
+	color: white;
+    padding-top: 25px;
+    text-align: center;
+}
+
+body {
+
+}
+
+.principal {
+	margin-left: 70px;
+}
+
+.imagenleft {
+	float: left;
+	margin-right: 20px;
+}
+
+.derecha {
+	display: inline-block;
+	width: 60%;
+}
+
+.parteArriba h2{
+	display: inline-block;
+}
+
+.parteAbajo {
+	float: left;
+	display: inline-block;
+	margin-top: 20px;
+}
+
+.botones {
+	margin-top: 43px;
+	float: right;
+	display: inline-block;
+}
+
+.genero {
+	margin-top: 30px;
+}
+
+.nota {
+	font-size: 40px;
+	font-weight: bold;
+}
+
+.caja {
+	overflow: hidden;
+}
+
+.arribaDerecha {
+	float: right;
+}
+
+.antes {
+	text-decoration: line-through;
+	color: red;
+	display: inline-block;
+	margin-right: 4px;
+}
+
+.despues {
+	display: inline-block;
+}
+
+.opcionesDeListado {
+	margin-left: 8%;
+}
+
+.navBotones {
+	float: right;
+}
+
+.buttonVer {
+	display: block;
+    width: 100%;
+    height: 30px;
+    margin-top: 3px;
+    padding-top: 4px;
+}
+
+.descripcionJuego {
+    width: 70%;
+    margin-left: 285px;
+    margin-top: 30px;
+}
+
+.imagenVer {
+	margin-right: 48px;
+}
+
+.verNota {
+    float: right;
+    margin-right: 18%;
+}
+
+
+.aparecer {
+  opacity: 0;
+  animation-timing-function: ease-out;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes alerta {
+    from   {opacity:0;}
+    to {opacity:1;}
+}
+
+/* Standard syntax */
+@keyframes alerta {
+    from  {opacity:0;}
+    to 	{opacity:1;}
+}

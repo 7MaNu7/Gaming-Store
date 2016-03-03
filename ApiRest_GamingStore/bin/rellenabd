@@ -1,0 +1,34 @@
+var app = require('../app');
+var models = require('../models');
+
+models.sequelize.sync({force:true}).then(function(){
+	return models.Consola.create({nombre:'Playstation 4', descripcion:'Es negra'})
+}).then(function(consola){
+	return models.Juego.bulkCreate([
+		{nombre:'Metal Gear Solid V', descripcion:'Este es el mejor juego del año', ConsolaId:consola.id},
+		{nombre:'Fifa 16', ConsolaId:consola.id},
+		{nombre:'Pro Evolution Soccer 2016', descripcion:'Este es el mejor juego del año', ConsolaId:consola.id},
+		{nombre:'Raw vs Smackdown 2016', ConsolaId:consola.id},
+		{nombre:'Little Big Planet', descripcion:'Este es el mejor juego del año', ConsolaId:consola.id},
+		{nombre:'Call of Duty: Black Ops 3', ConsolaId:consola.id}
+	])
+}).then(function(){
+	return models.Consola.create({nombre:'Wii U', descripcion:'Es blanca'})
+}).then(function(consola){
+	return models.Juego.create({
+		nombre:'New Super Mario Bros', descripcion:'Es multijugador', ConsolaId:consola.id
+	}).then(function(juego){
+		return models.Usuario.create({email:'mjvr4@alu.ua.es', nombre:'Manuel', apellidos:'Verdu', direccion:'Avenida Pais Valenciano'}).then(function(user){
+			user.addJuego(juego);
+		});
+	})
+}).then(function(){
+	return models.Consola.bulkCreate([
+		{nombre:'Xbox One'},
+		{nombre:'Nintendo DS', descripcion:'Es tactil'},
+		{nombre:'PSP', descripcion:'Es portatil'},
+		{nombre:'Playstation 3', descripcion:'Es negra'},
+		{nombre:'Xbox 360', descripcion:'Es blanca'},
+		{nombre:'Nintendo 3DS', descripcion:'Tiene funcion 3D'}
+	])
+})
